@@ -1,0 +1,90 @@
+{
+  "extends": [
+    "airbnb-base"
+  ],
+  "env": {
+    "commonjs": true,
+    "node": true,
+    "jest": true
+  },
+  "plugins": [
+    "import"
+  ],
+  "rules": {
+    "brace-style": [
+      "error",
+      "1tbs",
+      {
+        "allowSingleLine": false
+      }
+    ],
+    "camelcase": [
+      "off",
+      {
+        "properties": "never"
+      }
+    ],
+    "implicit-arrow-linebreak": "off",
+    "linebreak-style": [
+      "error",
+      "unix"
+    ],
+    "max-len": [
+      "error",
+      {
+        "ignoreStrings": true,
+        "ignoreUrls": true,
+        "ignoreTemplateLiterals": true,
+        "ignoreRegExpLiterals": true,
+        "ignoreComments": true,
+        "code": 80
+      }
+    ],
+    "max-statements-per-line": [
+      "error",
+      {
+        "max": 1
+      }
+    ],
+    "multiline-ternary": [
+      "error",
+      "always"
+    ],
+    "no-await-in-loop": "off",
+    "no-console": "error",
+    "no-multiple-empty-lines": [
+      "error",
+      {
+        "max": 1
+      }
+    ],
+    "no-restricted-syntax": [
+      "error",
+      "ForInStatement",
+      "LabeledStatement",
+      "WithStatement"
+    ],
+    "no-underscore-dangle": "off",
+    "no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "next"
+      }
+    ],
+    "object-property-newline": [
+      "error",
+      {
+        "allowAllPropertiesOnSameLine": false
+      }
+    ],
+    "semi": [
+      2,
+      "never"
+    ]
+  },
+  "settings": {
+    "import/core-modules": [
+      "aws-sdk"
+    ]
+  }
+}

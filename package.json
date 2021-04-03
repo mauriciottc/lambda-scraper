@@ -1,0 +1,29 @@
+{
+  "name": "lambda-scraper",
+  "version": "2.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "LOGGER_LEVEL=silent jest",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx src tests"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "~3.8.1",
+    "@aws-sdk/lib-dynamodb": "~3.8.1",
+    "axios": "^0.21.1",
+    "html-to-json": "^0.6.0",
+    "json-diff": "^0.5.4",
+    "slimbot": "^5.1.0",
+    "smelpers": "^1.15.2",
+    "ton-logger": "^1.0.10"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.20",
+    "@types/node": "^14.14.33",
+    "eslint": "^7.21.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "jest": "^26.6.3",
+    "serverless": "^2.29.0",
+    "serverless-offline": "^6.8.0"
+  }
+}

@@ -1,0 +1,51 @@
+service: lambda-scraper
+
+provider:
+  name: aws
+  region: us-east-1
+  runtime: nodejs14.x
+  stage: ${opt:stage, 'sdx'}
+  environment:
+    DYNAMO_TABLE_REPORT: ${self:service}-alerts
+    SUNO_COOKIE: ${ssm:/suno/cookie}
+    TELEGRAM_API: ${ssm:/telegram/api_key}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:GetItem
+        - dynamodb:UpdateItem
+      Resource: "*"
+    - Effect: Allow
+      Action:
+        - sns:*
+      Resource: "*"
+
+plugins:
+  - serverless-offline
+
+functions:
+  report-crawler:
+    name: ${self:service}-report-crawler
+    description: Retorna todas as transações dos ultimos 90 dias
+    memorySize: 256
+    handler: src/index.handler
+    timeout: 10
+    events:
+      - schedule:
+            rate: cron(0 10-21 ? * MON-FRI *)
+            enabled: true
+resources:
+  Resources:
+    dbAlerts:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:service}-alerts
+        AttributeDefinitions:
+          - AttributeName: report_id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: report_id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1

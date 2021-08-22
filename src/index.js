@@ -10,42 +10,46 @@ const filter = (obj) => obj.map(({ ticker, status, teto }) => ({
 }))
 
 const main = async (event) => {
+  console.log('started')
   const dep = main.dependencies()
   const cookie = process.env.SUNO_COOKIE
 
-  const lastReport = await dep.getLast()
+  const reports = await dep.getAllReports()
 
-  const result = await dep.getCarteira({
-    cookie,
-    url: lastReport.url,
-  })
-  const carteiraValor = result.splice(1, result.length - 2)
+  for (const report of reports) {
+    const result = await dep.getHtml({
+      cookie,
+      ...report,
+    })
+    const carteira = result.splice(1, result.length - 2)
 
-  if (carteiraValor.length <= 0) {
-    dep.slimbot.sendMessage(lastReport.chat_id, 'Erro de Autenticação')
-    return
-  }
+    if (carteira.length <= 0) {
+      console.log('auth error')
+      dep.slimbot.sendMessage(report.chat_id, 'Erro de Autenticação')
+      return
+    }
 
-  const diff = jsonDiff.diffString(
-    filter(lastReport.stocks),
-    filter(carteiraValor),
-  )
+    const diff = jsonDiff.diffString(
+      filter(report.stocks),
+      filter(carteira),
+    )
 
-  if (diff !== undefined && diff !== '') {
-    const message = diff
-      .replace(/\[/g, '')
-      .replace(/\]/g, '')
-    console.debug(diff)
-    dep.slimbot.sendMessage(lastReport.chat_id, `O report mudou!\n${message}`)
-    await dep.updateLast(carteiraValor)
-  } else {
-    console.debug('no difference')
+    if (diff !== undefined && diff !== '') {
+      const message = diff
+        .replace(/\[/g, '')
+        .replace(/\]/g, '')
+      console.log(diff)
+      dep.slimbot.sendMessage(report.chat_id, `O report ${report.report_id} mudou!\n${message}`)
+      await dep.updateLast(report.report_id, carteira)
+    } else {
+      console.log(`report: ${report.report_id} no difference`)
+    }
   }
 }
 
 main.dependencies = () => ({
-  getCarteira: sunoService.getCarteira,
-  getLast: reportRepository.getLast,
+  getHtml: sunoService.getHtml,
+  getAllReports: reportRepository.getAll,
   updateLast: reportRepository.update,
   slimbot: new Slimbot(process.env.TELEGRAM_API),
 })

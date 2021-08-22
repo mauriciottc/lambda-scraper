@@ -3,13 +3,32 @@ const { AWSFactory } = require('smelpers')
 
 const dynamodb = AWSFactory(AWS).DynamoDB()
 
-const getLast = async () => {
+const getAll = async () => {
+  const dep = getAll.dependencies()
+
+  const result = await dep.dynamodb.scan({
+    TableName: process.env.DYNAMO_TABLE_REPORT,
+    FilterExpression: '#status = :status_val',
+    ExpressionAttributeNames: {
+      '#status': 'status',
+    },
+    ExpressionAttributeValues: { ':status_val': 'active' },
+  }).promise()
+
+  return result.Items
+}
+
+getAll.dependencies = () => ({
+  dynamodb,
+})
+
+const getLast = async (report_id) => {
   const dep = getLast.dependencies()
 
   const result = await dep.dynamodb.get({
     TableName: process.env.DYNAMO_TABLE_REPORT,
     Key: {
-      report_id: 'valor',
+      report_id,
     },
   }).promise()
 
@@ -21,13 +40,13 @@ getLast.dependencies = () => ({
 })
 
 const update = async (
-  stocks,
+  report_id, stocks,
 ) => {
   const dep = update.dependencies()
   const params = {
     TableName: process.env.DYNAMO_TABLE_REPORT,
     Key: {
-      report_id: 'valor',
+      report_id,
     },
     UpdateExpression: 'set updated_at = :updated_at, stocks = :stocks',
     ExpressionAttributeValues: {
@@ -44,6 +63,7 @@ update.dependencies = () => ({
 })
 
 module.exports = {
+  getAll,
   getLast,
   update,
 }

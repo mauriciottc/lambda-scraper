@@ -2,25 +2,23 @@ const axios = require('axios')
 const htmlToJson = require('html-to-json')
 
 const models = {
-  ticker: {
-    dividendos: '.ticker span',
-    fiis: 'td:nth-child(2)',
-    valor: '.ticker span',
+  dividendos: {
+    ticker: '.ticker span',
+    preco: 'td:nth-child(8)',
+    teto: 'td:nth-child(9)',
+    status: 'td:nth-child(11)',
   },
-  preco: {
-    dividendos: 'td:nth-child(7)',
-    fiis: 'td:nth-child(8)',
-    valor: 'td:nth-child(7)',
+  fiis: {
+    ticker: 'td:nth-child(2)',
+    preco: 'td:nth-child(8)',
+    teto: 'td:nth-child(9)',
+    status: 'td:nth-child(11)',
   },
-  teto: {
-    dividendos: 'td:nth-child(8)',
-    fiis: 'td:nth-child(9)',
-    valor: 'td:nth-child(8)',
-  },
-  status: {
-    dividendos: 'td:nth-child(10)',
-    fiis: 'td:nth-child(11)',
-    valor: 'td:nth-child(10)',
+  valor: {
+    ticker: '.ticker span',
+    preco: 'td:nth-child(7)',
+    teto: 'td:nth-child(8)',
+    status: 'td:nth-child(10)',
   },
 }
 
@@ -38,12 +36,12 @@ const getHtml = async ({
 
   const promise = htmlToJson.parse(resultAxios.data, function () {
     return this.map('#table_1 tr', ($item) => ({
-      ticker: $item.find(models.ticker[report_id]).text(),
+      ticker: $item.find(models[report_id].ticker).text(),
       inicio: $item.find('td:nth-child(4)').text(),
       alocacao: $item.find('td:nth-child(5)').text(),
-      preco: $item.find(models.preco[report_id]).text(),
-      teto: $item.find(models.teto[report_id]).text(),
-      status: $item.find(models.status[report_id]).text(),
+      preco: $item.find(models[report_id].preco).text(),
+      teto: $item.find(models[report_id].teto).text(),
+      status: $item.find(models[report_id].status).text(),
     }))
   })
 

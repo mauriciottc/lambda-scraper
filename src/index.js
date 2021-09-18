@@ -25,7 +25,7 @@ const main = async (event) => {
 
     if (carteira.length <= 0) {
       console.log('auth error')
-      dep.slimbot.sendMessage(report.chat_id, 'Erro de Autenticação')
+      await dep.slimbot.sendMessage(report.chat_id, 'Erro de Autenticação')
       return
     }
 
@@ -39,7 +39,7 @@ const main = async (event) => {
         .replace(/\[/g, '')
         .replace(/\]/g, '')
       console.log(diff)
-      dep.slimbot.sendMessage(report.chat_id, `O report ${report.report_id} mudou!\n${message}`)
+      await dep.slimbot.sendMessage(report.chat_id, `O report ${report.report_id} mudou!\n${message}`)
       await dep.updateLast(report.report_id, carteira)
     } else {
       console.log(`report: ${report.report_id} no difference`)

@@ -67,4 +67,3 @@ module.exports = {
   getLast,
   update,
 }
-
